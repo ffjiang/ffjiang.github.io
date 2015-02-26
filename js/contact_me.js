@@ -17,17 +17,23 @@ $(function() {
             if (firstName.indexOf(' ') >= 0) {
                 firstName = name.split(' ').slice(0, -1).join(' ');
             }
-            $.ajax({
-                url: "././mail/contact_me.php",
-                type: "POST",
-                data: {
-                    name: name,
-                    phone: phone,
-                    email: email,
-                    message: message
-                },
-                cache: false,
-                success: function() {
+
+            Parse.$ = jQuery;
+         
+            // Initialize Parse with your Parse application javascript keys
+            Parse.initialize("mIOmQTOCgQ1aCsvtWTe50j475UwUq7MwPWCoYWYo",
+                            "2rcrVRRioAUZdQnoZOdmovF4fIgEwB3mZHsZHKyc");
+
+            var data = {
+                name: name,
+                email: email,
+                phone: phone,
+                message: message
+            };
+      
+            Parse.Cloud.run("feedback", data, {
+                success: function(e) {
+                    console.log(e);
                     // Success message
                     $('#success').html("<div class='alert alert-success'>");
                     $('#success > .alert-success').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
@@ -50,7 +56,7 @@ $(function() {
                     //clear all fields
                     $('#contactForm').trigger("reset");
                 },
-            })
+            });
         },
         filter: function() {
             return $(this).is(":visible");
